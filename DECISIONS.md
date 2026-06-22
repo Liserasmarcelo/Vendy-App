@@ -11,7 +11,7 @@
 
 | Decisión | Valor | Notas |
 |----------|-------|-------|
-| **Nombre empresa/plataforma** | `Vendy` | Nombre corto, memorable, dominio vendy.app o vendy.shop |
+| **Nombre empresa/plataforma** | `Vendy` | Nombre corto, memorable, dominio vendyapp.app |
 | **Bot Padre username** | `@VendyBot` o `@VendyShopBot` | Disponibilidad a verificar en BotFather |
 | **Color primario** | `#FF7403` | Naranja energético, acción, compra. Tema oscuro obligatorio. |
 | **Tipografía** | `Inter` | Sans-serif moderna, legible en móvil, weights 400/500/600/700 |
@@ -193,8 +193,8 @@ vendy/
 # === APP ===
 NODE_ENV=development
 APP_NAME=Vendy
-APP_URL=https://api.vendy.app
-FRONTEND_URL=https://app.vendy.app
+APP_URL=https://api.vendyapp.app
+FRONTEND_URL=https://app.vendyapp.app
 
 # === DATABASE ===
 DATABASE_URL=postgresql://user:pass@localhost:5432/vendy?schema=public
@@ -223,7 +223,7 @@ R2_ACCOUNT_ID=...
 R2_ACCESS_KEY_ID=...
 R2_SECRET_ACCESS_KEY=...
 R2_BUCKET_NAME=vendy-uploads
-R2_PUBLIC_URL=https://cdn.vendy.app
+R2_PUBLIC_URL=https://cdn.vendyapp.app
 
 # === SECURITY ===
 JWT_SECRET=super-secret-min-32-chars

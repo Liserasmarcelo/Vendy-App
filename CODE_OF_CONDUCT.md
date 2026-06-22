@@ -38,7 +38,7 @@ Este Código de Conducta aplica dentro de todos los espacios del proyecto, y tam
 
 ## Aplicación
 
-Instancias de comportamiento abusivo, acosador o inaceptable pueden ser reportadas contactando al equipo del proyecto en [conduct@vendy.app](mailto:conduct@vendy.app). Todas las quejas serán revisadas e investigadas y resultarán en una respuesta que se considere necesaria y apropiada a las circunstancias. El equipo del proyecto está obligado a mantener confidencialidad respecto al reportador de un incidente.
+Instancias de comportamiento abusivo, acosador o inaceptable pueden ser reportadas contactando al equipo del proyecto en [conduct@vendyapp.app](mailto:conduct@vendyapp.app). Todas las quejas serán revisadas e investigadas y resultarán en una respuesta que se considere necesaria y apropiada a las circunstancias. El equipo del proyecto está obligado a mantener confidencialidad respecto al reportador de un incidente.
 
 Los mantenedores del proyecto que no sigan o hagan cumplir el Código de Conducta de buena fe pueden enfrentar repercusiones temporales o permanentes según lo determinen otros mantenedores del proyecto.
 
@@ -48,6 +48,6 @@ Este Código de Conducta es una adaptación del [Contributor Covenant](https://w
 
 ## Contacto
 
-- Email: [conduct@vendy.app](mailto:conduct@vendy.app)
+- Email: [conduct@vendyapp.app](mailto:conduct@vendyapp.app)
 - Telegram: [@vendydev](https://t.me/vendydev)
-- Anónimo: [Formulario](https://forms.vendy.app/conduct)
+- Anónimo: [Formulario](https://forms.vendyapp.app/conduct)

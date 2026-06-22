@@ -324,4 +324,4 @@ Ver [CONTRIBUTING.md](CONTRIBUTING.md) para guías de contribución.
 
 - [GitHub Issues](https://github.com/vendy/vendy/issues)
 - [Telegram: @vendysupport](https://t.me/vendysupport)
-- Email: support@vendy.app
+- Email: support@vendyapp.app

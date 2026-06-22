@@ -17,9 +17,9 @@ Usá uno de estos canales:
 
 | Canal | Uso | Tiempo de respuesta |
 |-------|-----|---------------------|
-| Email | [security@vendy.app](mailto:security@vendy.app) | 24 horas |
+| Email | [security@vendyapp.app](mailto:security@vendyapp.app) | 24 horas |
 | Telegram | [@vendysecurity](https://t.me/vendysecurity) | 24 horas |
-| Formulario | [security.vendy.app](https://security.vendy.app) | 24 horas |
+| Formulario | [security.vendyapp.app](https://security.vendyapp.app) | 24 horas |
 | GitHub Private | Security Advisories | 48 horas |
 
 ### Información Requerida
@@ -88,7 +88,7 @@ Monitoreamos vulnerabilidades en dependencias:
 
 Para incidentes de seguridad activos:
 
-- **Email:** [security@vendy.app](mailto:security@vendy.app)
+- **Email:** [security@vendyapp.app](mailto:security@vendyapp.app)
 - **Telegram:** [@vendysecurity](https://t.me/vendysecurity)
 - **Teléfono:** +595-XXX-XXXXXX (solo emergencias)
 

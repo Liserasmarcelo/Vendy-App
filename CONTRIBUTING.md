@@ -617,7 +617,7 @@ Hooks configurados:
 
 - [GitHub Discussions](https://github.com/vendy/vendy/discussions)
 - [Telegram: @vendydev](https://t.me/vendydev)
-- Email: dev@vendy.app
+- Email: dev@vendyapp.app
 
 ### ¿Cómo reporto una vulnerabilidad de seguridad?
 

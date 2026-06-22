@@ -95,12 +95,12 @@ echo "✅ Deploy complete!"
 echo ""
 echo "URLs:"
 if [ "$ENVIRONMENT" = "production" ]; then
-    echo "  API:       https://api.vendy.app"
-    echo "  Mini App:  https://app.vendy.app"
-    echo "  Docs:      https://api.vendy.app/docs"
+    echo "  API:       https://api.vendyapp.app"
+    echo "  Mini App:  https://app.vendyapp.app"
+    echo "  Docs:      https://api.vendyapp.app/docs"
 else
-    echo "  API:       https://api-staging.vendy.app"
-    echo "  Mini App:  https://app-staging.vendy.app"
-    echo "  Docs:      https://api-staging.vendy.app/docs"
+    echo "  API:       https://api-staging.vendyapp.app"
+    echo "  Mini App:  https://app-staging.vendyapp.app"
+    echo "  Docs:      https://api-staging.vendyapp.app/docs"
 fi
 echo ""

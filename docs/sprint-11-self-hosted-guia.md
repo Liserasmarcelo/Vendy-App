@@ -272,7 +272,7 @@ Verificación: Estás en el dashboard de Cloudflare
 **PASO 12: Agregar tu dominio a Cloudflare**
 
 1. Hacé click en "Add a Site"
-2. Escribí tu dominio: `vendy.app` (o el que tengas)
+2. Escribí tu dominio: `vendyapp.app` (o el que tengas)
 3. Hacé click en "Add Site"
 4. Elegí el plan "Free"
 5. Cloudflare escanea registros DNS existentes
@@ -303,7 +303,7 @@ Verificación: En Cloudflare, eventualmente muestra "Active" (puede tardar 5 min
 | A | `api` | `[IP de tu Dell, ej: 192.168.1.100]` | DNS only (nube gris) |
 | A | `app` | `[IP de tu Dell]` | DNS only (nube gris) |
 | A | `@` | `[IP de tu Dell]` | DNS only (nube gris) |
-| CNAME | `www` | `vendy.app` | DNS only |
+| CNAME | `www` | `vendyapp.app` | DNS only |
 
 > **IMPORTANTE:** Dejá el proxy en "DNS only" (nube gris) por ahora. Lo activaremos después.
 
@@ -332,16 +332,16 @@ Verificación: SSL/TLS muestra "Active Certificate"
 4. DuckDNS te va a dar un token (una cadena larga)
 5. **Anotá este token**
 
-Verificación: Estás en el dashboard de DuckDNS con tu dominio (ej: `vendy.duckdns.org`)
+Verificación: Estás en el dashboard de DuckDNS con tu dominio (ej: `vendyapp.duckdns.org`)
 
 **PASO 17: Configurar tu dominio DuckDNS**
 
 1. En el dashboard de DuckDNS, en "domains", escribí un nombre: `vendy`
 2. En "current ip", dejá la IP que detecta automáticamente (debería ser la IP pública de tu casa)
 3. Hacé click en "add domain"
-4. Tu dominio será: `vendy.duckdns.org`
+4. Tu dominio será: `vendyapp.duckdns.org`
 
-Verificación: `vendy.duckdns.org` aparece en la lista de tus dominios
+Verificación: `vendyapp.duckdns.org` aparece en la lista de tus dominios
 
 **PASO 18: Instalar el cliente DuckDNS en la Dell**
 
@@ -441,7 +441,7 @@ Verificación: `sudo ufw status` muestra "Status: active" con los puertos permit
 
 6. Guardá los cambios
 
-Verificación: Desde fuera de tu red (usando datos móviles), podés acceder a `http://vendy.duckdns.org:3001`
+Verificación: Desde fuera de tu red (usando datos móviles), podés acceder a `http://vendyapp.duckdns.org:3001`
 
 ---
 
@@ -459,7 +459,7 @@ Verificación: Desde fuera de tu red (usando datos móviles), podés acceder a `
 - [ ] Registros DNS A creados (api, app, @)
 - [ ] SSL/TLS configurado en Cloudflare
 - [ ] DuckDNS cuenta creada
-- [ ] Dominio `vendy.duckdns.org` configurado
+- [ ] Dominio `vendyapp.duckdns.org` configurado
 - [ ] Script de actualización DuckDNS funcionando
 - [ ] Cron configurado para actualizar cada 5 minutos
 - [ ] UFW activado con puertos permitidos
@@ -752,7 +752,7 @@ services:
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
-      - "--certificatesresolvers.letsencrypt.acme.email=tu-email@vendy.app"
+      - "--certificatesresolvers.letsencrypt.acme.email=tu-email@vendyapp.app"
       - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
@@ -827,10 +827,10 @@ services:
       - CHILD_BOT_TOKEN=${CHILD_BOT_TOKEN}
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - WEBHOOK_SECRET=${WEBHOOK_SECRET}
-      - MINI_APP_URL=${MINI_APP_URL:-https://app.vendy.app}
+      - MINI_APP_URL=${MINI_APP_URL:-https://app.vendyapp.app}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`api.vendy.app`) || Host(`api.vendy.duckdns.org`)"
+      - "traefik.http.routers.api.rule=Host(`api.vendyapp.app`) || Host(`api.vendyapp.duckdns.org`)"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.services.api.loadbalancer.server.port=3001"
@@ -894,7 +894,7 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mini-app.rule=Host(`app.vendy.app`) || Host(`app.vendy.duckdns.org`)"
+      - "traefik.http.routers.mini-app.rule=Host(`app.vendyapp.app`) || Host(`app.vendyapp.duckdns.org`)"
       - "traefik.http.routers.mini-app.entrypoints=websecure"
       - "traefik.http.routers.mini-app.tls.certresolver=letsencrypt"
       - "traefik.http.services.mini-app.loadbalancer.server.port=80"
@@ -925,7 +925,7 @@ networks:
     driver: bridge
 ```
 
-> **IMPORTANTE:** Reemplazá `tu-email@vendy.app` con tu email real para Let's Encrypt.
+> **IMPORTANTE:** Reemplazá `tu-email@vendyapp.app` con tu email real para Let's Encrypt.
 
 2. Guardá el archivo
 
@@ -966,8 +966,8 @@ STRIPE_SECRET_KEY=sk_test_...
 WEBHOOK_SECRET=GENERAR
 
 # URLs
-MINI_APP_URL=https://app.vendy.app
-API_URL=https://api.vendy.app
+MINI_APP_URL=https://app.vendyapp.app
+API_URL=https://api.vendyapp.app
 ```
 
 2. Generá los secrets:
@@ -1336,7 +1336,7 @@ jobs:
 
 | Name | Value | Cómo obtener |
 |------|-------|-------------|
-| `SSH_HOST` | IP pública de tu casa o `vendy.duckdns.org` | DuckDNS |
+| `SSH_HOST` | IP pública de tu casa o `vendyapp.duckdns.org` | DuckDNS |
 | `SSH_USER` | `vendy` | El usuario que creaste en Ubuntu |
 | `SSH_PASSWORD` | Contraseña de `vendy` | La que creaste en la instalación |
 
@@ -1359,7 +1359,7 @@ sudo systemctl start ssh
 
 > **Nota:** Para mayor seguridad, considerá usar una VPN (WireGuard) en lugar de exponer SSH directamente.
 
-Verificación: Desde tu Mac, podés conectarte: `ssh vendy@vendy.duckdns.org`
+Verificación: Desde tu Mac, podés conectarte: `ssh vendy@vendyapp.duckdns.org`
 
 **PASO 6: Commitear y probar**
 
@@ -1681,7 +1681,7 @@ echo "  $(date)"
 echo "=========================================="
 
 if [ "$ENVIRONMENT" == "remote" ]; then
-    HOST="${SSH_HOST:-api.vendy.app}"
+    HOST="${SSH_HOST:-api.vendyapp.app}"
 fi
 
 echo ""
@@ -1711,7 +1711,7 @@ fi
 
 echo ""
 echo "Checking SSL certificate..."
-if echo | openssl s_client -servername api.vendy.app -connect api.vendy.app:443 2>/dev/null | openssl x509 -noout -dates > /dev/null; then
+if echo | openssl s_client -servername api.vendyapp.app -connect api.vendyapp.app:443 2>/dev/null | openssl x509 -noout -dates > /dev/null; then
     echo "✅ SSL certificate is valid"
 else
     echo "❌ SSL certificate check failed"
@@ -1896,11 +1896,11 @@ Internet
     ▼
 Cloudflare (DNS + SSL + CDN + DDoS)
     │
-    ├── api.vendy.app ──► Router ──► Dell Optiplex 3060
+    ├── api.vendyapp.app ──► Router ──► Dell Optiplex 3060
     │                                         │
     │                                         ├── Traefik (Reverse Proxy + SSL)
-    │                                         │       ├── api.vendy.app:3001
-    │                                         │       └── app.vendy.app:80
+    │                                         │       ├── api.vendyapp.app:3001
+    │                                         │       └── app.vendyapp.app:80
     │                                         ├── API (Fastify + Prisma)
     │                                         ├── Bot Parent (grammy)
     │                                         ├── Bot Child (grammy)
@@ -1908,7 +1908,7 @@ Cloudflare (DNS + SSL + CDN + DDoS)
     │                                         ├── PostgreSQL
     │                                         └── Redis
     │
-    └── app.vendy.app ──► Router ──► Dell Optiplex 3060
+    └── app.vendyapp.app ──► Router ──► Dell Optiplex 3060
 ```
 
 ## Hardware
@@ -1954,8 +1954,8 @@ Cloudflare (DNS + SSL + CDN + DDoS)
 
 | Servicio | URL Local | URL Pública |
 |----------|-----------|-------------|
-| API | http://localhost:3001 | https://api.vendy.app |
-| Mini-App | http://localhost | https://app.vendy.app |
+| API | http://localhost:3001 | https://api.vendyapp.app |
+| Mini-App | http://localhost | https://app.vendyapp.app |
 | Traefik Dashboard | http://localhost:8080 | — |
 | PostgreSQL | localhost:5432 | — (no expuesto) |
 | Redis | localhost:6379 | — (no expuesto) |
@@ -2055,7 +2055,7 @@ docker compose pull && docker compose up -d
    - Output Directory: `dist`
 
 2. **Configurar variables**
-   - `VITE_API_URL` = `https://api.vendy.app`
+   - `VITE_API_URL` = `https://api.vendyapp.app`
 
 3. **Deploy**
    - Vercel hace deploy automático
@@ -2084,15 +2084,15 @@ docker compose pull && docker compose up -d
 ### Fase 5: Cambiar DNS (Día 2)
 
 1. **En Cloudflare**, actualizar registros:
-   - `api.vendy.app` → CNAME a Railway
-   - `app.vendy.app` → CNAME a Vercel
+   - `api.vendyapp.app` → CNAME a Railway
+   - `app.vendyapp.app` → CNAME a Vercel
 
 2. **Esperar propagación** (5 min - 1 hora)
 
 3. **Verificar**
    ```bash
-   curl https://api.vendy.app/health
-   curl https://app.vendy.app
+   curl https://api.vendyapp.app/health
+   curl https://app.vendyapp.app
    ```
 
 ### Fase 6: Apagar local (Día 3)
@@ -2163,7 +2163,7 @@ Si algo falla en la nube:
 | A | `@` | `[IP de tu Dell]` | DNS only | Auto |
 | A | `api` | `[IP de tu Dell]` | DNS only | Auto |
 | A | `app` | `[IP de tu Dell]` | DNS only | Auto |
-| CNAME | `www` | `vendy.app` | DNS only | Auto |
+| CNAME | `www` | `vendyapp.app` | DNS only | Auto |
 
 ## SSL/TLS
 
@@ -2186,8 +2186,8 @@ Si algo falla en la nube:
 
 ## Page Rules
 
-1. `www.vendy.app/*` → Forwarding URL → `https://app.vendy.app/$1` (301)
-2. `vendy.app/*` → Forwarding URL → `https://app.vendy.app/$1` (301)
+1. `www.vendyapp.app/*` → Forwarding URL → `https://app.vendyapp.app/$1` (301)
+2. `vendyapp.app/*` → Forwarding URL → `https://app.vendyapp.app/$1` (301)
 ```
 
 2. Guardá el archivo
@@ -2378,11 +2378,11 @@ Verificación: Escribí `/` en el chat con tu bot y ves la lista de comandos
 5. Escribí la URL de tu Mini-App:
 
 ```
-https://app.vendy.app
+https://app.vendyapp.app
 ```
 
 > Si aún no tenés el dominio configurado, usá tu DuckDNS:
-> `https://app.vendy.duckdns.org`
+> `https://app.vendyapp.duckdns.org`
 
 6. Tocá "Save"
 
@@ -2397,7 +2397,7 @@ Verificación: Abrí el chat con tu bot y ves un botón "Abrir App" o "Menu" al 
 5. Escribí la URL de tu Mini-App:
 
 ```
-https://app.vendy.app
+https://app.vendyapp.app
 ```
 
 6. Tocá "Save"
@@ -2433,11 +2433,11 @@ PARENT_BOT_TOKEN=1234567890:ABC...XYZ
 CHILD_BOT_TOKEN=1234567890:DEF...UVW
 
 # Webhook configuration
-WEBHOOK_URL=https://api.vendy.app/webhook
+WEBHOOK_URL=https://api.vendyapp.app/webhook
 WEBHOOK_SECRET=tu_webhook_secret_generado
 
 # Para self-hosted con DuckDNS (alternativa)
-# WEBHOOK_URL=https://api.vendy.duckdns.org/webhook
+# WEBHOOK_URL=https://api.vendyapp.duckdns.org/webhook
 ```
 
 2. Generá un webhook secret:
@@ -2550,7 +2550,7 @@ bot.start((ctx) => {
           [
             { 
               text: '🚀 Abrir Vendy', 
-              web_app: { url: `https://app.vendy.app?ref=${startParam}` } 
+              web_app: { url: `https://app.vendyapp.app?ref=${startParam}` } 
             }
           ],
           [
@@ -2572,7 +2572,7 @@ bot.help((ctx) => {
     `/cart - Ver carrito\n` +
     `/orders - Mis órdenes\n` +
     `/language - Cambiar idioma\n\n` +
-    `¿Necesitás ayuda? Escribinos a soporte@vendy.app`
+    `¿Necesitás ayuda? Escribinos a soporte@vendyapp.app`
   );
 });
 
@@ -2620,12 +2620,12 @@ export { bot };
     # ... configuración existente ...
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`api.vendy.app`) || Host(`api.vendy.duckdns.org`)"
+      - "traefik.http.routers.api.rule=Host(`api.vendyapp.app`) || Host(`api.vendyapp.duckdns.org`)"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.services.api.loadbalancer.server.port=3001"
       # Ruta específica para webhooks (sin autenticación)
-      - "traefik.http.routers.api-webhook.rule=Host(`api.vendy.app`) && Path(`/webhook`)"
+      - "traefik.http.routers.api-webhook.rule=Host(`api.vendyapp.app`) && Path(`/webhook`)"
       - "traefik.http.routers.api-webhook.entrypoints=websecure"
       - "traefik.http.routers.api-webhook.tls.certresolver=letsencrypt"
     networks:
@@ -2858,7 +2858,7 @@ export default async function analyticsRoutes(app: FastifyInstance) {
 
 ```typescript
 // Cliente API que envía initData en cada request
-const API_URL = import.meta.env.VITE_API_URL || 'https://api.vendy.app';
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.vendyapp.app';
 
 class ApiClient {
   private baseUrl: string;

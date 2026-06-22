@@ -9,7 +9,7 @@ bruno/
 ├── bruno.json                    # Metadata de la colección
 ├── environments/
 │   ├── local.bruenv              # http://localhost:3001
-│   └── staging.bruenv            # https://api-staging.vendy.app
+│   └── staging.bruenv            # https://api-staging.vendyapp.app
 ├── health-check.bru              # GET /health
 ├── auth/
 │   ├── me.bru                    # GET /auth/me
