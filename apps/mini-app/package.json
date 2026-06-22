@@ -20,6 +20,9 @@
     "react-i18next": "^14.1.0",
     "i18next": "^23.11.0",
     "zustand": "^4.5.0",
+    "lottie-react": "^2.4.0",
+    "gsap": "^3.12.0",
+    "framer-motion": "^10.16.0",
     "@vendy/shared-types": "workspace:*",
     "@vendy/ui-components": "workspace:*"
   },

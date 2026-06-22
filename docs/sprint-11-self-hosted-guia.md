@@ -245,7 +245,6 @@ git remote add origin https://github.com/TU_USERNAME/vendy.git
 git branch -M main
 git push -u origin main
 ```
-
 Verificación: Andá a `https://github.com/TU_USERNAME/vendy` y deberías ver todos los archivos
 
 **PASO 10: Crear la branch `develop`**
