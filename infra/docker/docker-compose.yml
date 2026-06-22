@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # DATABASE
+  # ==========================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: vendy-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: vendy
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # CACHE
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: vendy-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # API
+  # ==========================================
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.api
+    container_name: vendy-api
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/vendy
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-vendy-dev-secret}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ==========================================
+  # BOT PARENT
+  # ==========================================
+  bot-parent:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.bot-parent
+    container_name: vendy-bot-parent
+    environment:
+      NODE_ENV: production
+      PARENT_BOT_TOKEN: ${PARENT_BOT_TOKEN}
+      ADMIN_TELEGRAM_IDS: ${ADMIN_TELEGRAM_IDS}
+      API_URL: http://api:3001
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ==========================================
+  # BOT CHILD (template - one per shop)
+  # ==========================================
+  bot-child:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.bot-child
+    container_name: vendy-bot-child-template
+    environment:
+      NODE_ENV: production
+      BOT_TOKEN: ${BOT_TOKEN}
+      SHOP_ID: ${SHOP_ID}
+      SHOP_NAME: ${SHOP_NAME}
+      API_URL: http://api:3001
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    profiles:
+      - bot-child
+
+volumes:
+  postgres_data:
+  redis_data:

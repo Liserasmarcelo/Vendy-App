@@ -1,0 +1,42 @@
+{
+  "name": "@vendy/api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "eslint . --ext .ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio",
+    "db:seed": "tsx prisma/seed.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "fastify": "^4.28.0",
+    "@fastify/cors": "^9.0.0",
+    "@fastify/rate-limit": "^9.0.0",
+    "@fastify/jwt": "^8.0.0",
+    "@fastify/multipart": "^8.0.0",
+    "@prisma/client": "^5.15.0",
+    "prisma": "^5.15.0",
+    "ioredis": "^5.4.0",
+    "bullmq": "^5.8.0",
+    "grammy": "^1.25.0",
+    "stripe": "^15.0.0",
+    "zod": "^3.23.0",
+    "dotenv": "^16.4.0",
+    "@vendy/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "tsx": "^4.15.0",
+    "vitest": "^1.6.0",
+    "@types/node": "^20.14.0",
+    "@vendy/config": "workspace:*"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@vendy/config",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./index.js",
+  "scripts": {
+    "lint": "echo 'No lint needed for config package'",
+    "typecheck": "echo 'No typecheck needed for config package'",
+    "clean": "echo 'No clean needed for config package'"
+  },
+  "files": [
+    "eslint.config.js",
+    "tsconfig.base.json",
+    "tailwind.config.js"
+  ]
+}

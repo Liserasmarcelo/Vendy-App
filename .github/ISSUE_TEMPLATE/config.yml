@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Preguntas y Discusiones
+    url: https://github.com/vendy/vendy/discussions
+    about: Usa GitHub Discussions para preguntas y discusiones generales
+  - name: Documentación
+    url: https://docs.vendy.app
+    about: Consulta la documentación antes de reportar
+  - name: Telegram Community
+    url: https://t.me/vendydev
+    about: Únete a nuestra comunidad en Telegram

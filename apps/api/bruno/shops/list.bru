@@ -1,0 +1,27 @@
+meta {
+  name: List Shops
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/shops
+  auth: none
+}
+
+headers {
+  X-Telegram-Init-Data: {{initData}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.shops: isArray
+}
+
+script:post-response {
+  // Si hay tiendas, guardar el ID de la primera para requests posteriores
+  if (res.status === 200 && res.body.shops && res.body.shops.length > 0) {
+    bru.setVar("shopId", res.body.shops[0].id);
+    bru.setVar("shopName", res.body.shops[0].name);
+  }
+}

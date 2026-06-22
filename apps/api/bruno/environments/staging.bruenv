@@ -1,0 +1,5 @@
+vars {
+  baseUrl: https://api-staging.vendy.app
+  initData: user=%7B%22id%22%3A123456789%2C%22first_name%22%3A%22Test%22%2C%22last_name%22%3A%22User%22%2C%22username%22%3A%22testuser%22%2C%22language_code%22%3A%22es%22%7D&auth_date=1750243200&hash=REPLACE_WITH_REAL_HASH
+  shopId: 1
+}

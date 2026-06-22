@@ -1,0 +1,33 @@
+meta {
+  name: Validate Bot Token
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/auth/validate-bot-token
+  auth: none
+}
+
+headers {
+  X-Telegram-Init-Data: {{initData}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "token": "1234567890:AAHxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.valid: isBoolean
+}
+
+script:post-response {
+  if (res.status === 200 && res.body.valid) {
+    bru.setVar("botUsername", res.body.bot.username);
+    bru.setVar("botName", res.body.bot.name);
+  }
+}

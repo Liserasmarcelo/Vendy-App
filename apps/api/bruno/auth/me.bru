@@ -1,0 +1,30 @@
+meta {
+  name: Get Current User
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/auth/me
+  auth: none
+}
+
+headers {
+  X-Telegram-Init-Data: {{initData}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.user: isObject
+  res.body.user.id: isNumber
+  res.body.user.telegramId: isString
+  res.body.user.firstName: isString
+}
+
+script:post-response {
+  // Guardar datos del usuario para requests posteriores
+  if (res.status === 200) {
+    bru.setVar("userId", res.body.user.id);
+    bru.setVar("telegramId", res.body.user.telegramId);
+  }
+}

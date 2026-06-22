@@ -1,0 +1,28 @@
+{
+  "name": "@vendy/bot-parent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "eslint . --ext .ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "grammy": "^1.24.0",
+    "@grammyjs/conversations": "^1.2.0",
+    "@grammyjs/menu": "^1.2.0",
+    "@grammyjs/hydrate": "^1.4.0",
+    "@vendy/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "tsx": "^4.15.0",
+    "vitest": "^1.6.0",
+    "@types/node": "^20.14.0",
+    "@vendy/config": "workspace:*"
+  }
+}

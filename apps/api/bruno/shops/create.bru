@@ -1,0 +1,43 @@
+meta {
+  name: Create Shop
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/shops
+  auth: none
+}
+
+headers {
+  X-Telegram-Init-Data: {{initData}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Mi Tienda de Prueba",
+    "description": "Una tienda de prueba para testing",
+    "category": "Electrónica",
+    "country": "PY",
+    "currency": "USD",
+    "welcomeMessage": "¡Bienvenido a Mi Tienda!"
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.shop: isObject
+  res.body.shop.id: isNumber
+  res.body.shop.name: eq Mi Tienda de Prueba
+  res.body.shop.status: eq TRIAL
+  res.body.shop.plan: eq GROWTH
+  res.body.shop.settings: isObject
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setVar("shopId", res.body.shop.id);
+    bru.setVar("shopName", res.body.shop.name);
+  }
+}

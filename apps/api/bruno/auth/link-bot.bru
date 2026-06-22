@@ -1,0 +1,35 @@
+meta {
+  name: Link Bot to Shop
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/auth/link-bot
+  auth: none
+}
+
+headers {
+  X-Telegram-Init-Data: {{initData}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "token": "1234567890:***",
+    "shopId": {{shopId}}
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.message: eq Bot linked successfully
+  res.body.shop: isObject
+  res.body.shop.botUsername: isString
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setVar("botUsername", res.body.shop.botUsername);
+  }
+}

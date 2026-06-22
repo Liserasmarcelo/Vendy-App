@@ -1,0 +1,27 @@
+meta {
+  name: Delete Shop
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/shops/{{shopId}}
+  auth: none
+}
+
+headers {
+  X-Telegram-Init-Data: {{initData}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.message: eq Shop deleted successfully
+  res.body.shopName: isString
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setVar("shopId", null);
+    bru.setVar("shopName", null);
+  }
+}

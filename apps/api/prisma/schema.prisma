@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Shop {
+  id          Int      @id @default(autoincrement())
+  adminId     Int
+  name        String
+  description String?
+  category    String?
+  country     String   @default("PY")
+  currency    String   @default("USD")
+  primaryColor String  @default("#FF7403")
+  status      String   @default("pending")
+  botUsername String?
+  botToken    String?
+  webhookUrl  String?
+  adminEmail  String?
+  adminPhone  String?
+  adminName   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products    Product[]
+  orders      Order[]
+  customers   Customer[]
+
+  @@index([adminId])
+  @@index([status])
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  shopId      Int
+  name        String
+  description String?
+  price       Float
+  currency    String   @default("USD")
+  category    String?
+  stock       Int      @default(0)
+  images      String[]
+  variants    Json?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  shop        Shop     @relation(fields: [shopId], references: [id])
+  orderItems  OrderItem[]
+
+  @@index([shopId])
+  @@index([category])
+  @@index([isActive])
+}
+
+model Customer {
+  id         Int      @id @default(autoincrement())
+  shopId     Int
+  telegramId String   @unique
+  firstName  String?
+  lastName   String?
+  username   String?
+  phone      String?
+  email      String?
+  language   String   @default("es")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  shop       Shop     @relation(fields: [shopId], references: [id])
+  orders     Order[]
+
+  @@index([shopId])
+  @@index([telegramId])
+}
+
+model Order {
+  id                Int      @id @default(autoincrement())
+  shopId            Int
+  customerId        Int
+  orderNumber       String   @unique
+  total             Float
+  status            String   @default("pending")
+  paymentMethod     String?
+  paymentStatus     String   @default("pending")
+  shippingAddress   Json?
+  cancellationReason String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  shop              Shop     @relation(fields: [shopId], references: [id])
+  customer          Customer @relation(fields: [customerId], references: [id])
+  items             OrderItem[]
+
+  @@index([shopId])
+  @@index([status])
+  @@index([customerId])
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  name      String
+  quantity  Int
+  price     Float
+  variant   Json?
+
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+}

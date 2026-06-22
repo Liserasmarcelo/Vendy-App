@@ -1,0 +1,38 @@
+meta {
+  name: Update Shop
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/shops/{{shopId}}
+  auth: none
+}
+
+headers {
+  X-Telegram-Init-Data: {{initData}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Mi Tienda Actualizada",
+    "description": "Descripción actualizada",
+    "primaryColor": "#00C853",
+    "welcomeMessage": "¡Bienvenido a Mi Tienda Actualizada!"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.shop: isObject
+  res.body.shop.id: isNumber
+  res.body.shop.name: eq Mi Tienda Actualizada
+  res.body.shop.primaryColor: eq #00C853
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setVar("shopName", res.body.shop.name);
+  }
+}

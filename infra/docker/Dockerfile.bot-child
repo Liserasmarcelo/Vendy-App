@@ -1,0 +1,21 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Copy workspace files
+COPY package.json pnpm-workspace.yaml ./
+COPY packages ./packages
+COPY apps/bot-child ./apps/bot-child
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Build
+RUN pnpm --filter @vendy/shared-types build
+RUN pnpm --filter @vendy/bot-child build
+
+# Start
+CMD ["node", "apps/bot-child/dist/index.js"]

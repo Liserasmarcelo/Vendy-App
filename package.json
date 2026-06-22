@@ -1,0 +1,32 @@
+{
+  "name": "vendy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vendy — Store-as-a-Service para Telegram. Multi-bot ecommerce platform.",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "db:migrate": "cd apps/api && pnpm prisma migrate dev",
+    "db:generate": "cd apps/api && pnpm prisma generate",
+    "db:studio": "cd apps/api && pnpm prisma studio",
+    "db:seed": "cd apps/api && pnpm tsx prisma/seed.ts",
+    "setup": "bash scripts/setup.sh",
+    "clean": "turbo run clean && rm -rf node_modules .turbo"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.5.0"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
