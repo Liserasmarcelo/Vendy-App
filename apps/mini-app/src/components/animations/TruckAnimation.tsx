@@ -7,9 +7,7 @@
 import React from 'react';
 import { LottiePlayer } from './LottiePlayer';
 
-// TODO: Crear asset truck-moving.json
-// import truckMoving from '../../assets/animations/truck-moving.json';
-const truckMoving = {} as object; // Placeholder hasta tener el JSON
+import truckMoving from '../../assets/animations/truck-moving.json';
 
 interface Props {
   className?: string;

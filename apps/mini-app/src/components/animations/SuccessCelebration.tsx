@@ -9,11 +9,8 @@ import { motion } from 'framer-motion';
 import { LottiePlayer } from './LottiePlayer';
 import { useHaptic } from '../../hooks/useHaptic';
 
-// TODO: Crear assets
-// import successCelebration from '../../assets/animations/success-celebration.json';
-// import confettiFall from '../../assets/animations/confetti-fall.json';
-const successCelebration = {} as object;
-const confettiFall = {} as object;
+import successCelebration from '../../assets/animations/success-celebration.json';
+import confettiFall from '../../assets/animations/confetti-fall.json';
 
 interface Props {
   orderNumber: string;

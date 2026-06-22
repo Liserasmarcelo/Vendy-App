@@ -8,9 +8,7 @@ import React, { useEffect, useRef } from 'react';
 import { LottiePlayer, LottiePlayerHandle } from './LottiePlayer';
 import { useHaptic } from '../../hooks/useHaptic';
 
-// TODO: Crear asset payment-processing.json
-// import paymentProcessing from '../../assets/animations/payment-processing.json';
-const paymentProcessing = {} as object; // Placeholder hasta tener el JSON
+import paymentProcessing from '../../assets/animations/payment-processing.json';
 
 interface Props {
   progress: number;      // 0-100

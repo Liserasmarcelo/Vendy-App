@@ -7,9 +7,7 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { LottiePlayer, LottiePlayerHandle } from './LottiePlayer';
 
-// TODO: Crear asset cart-add.json
-// import cartAdd from '../../assets/animations/cart-add.json';
-const cartAdd = {} as object; // Placeholder hasta tener el JSON
+import cartAdd from '../../assets/animations/cart-add.json';
 
 export interface CartAddHandle {
   play: () => void;

@@ -8,15 +8,10 @@ import React from 'react';
 import { LottiePlayer } from './LottiePlayer';
 import { useHaptic } from '../../hooks/useHaptic';
 
-// TODO: Crear assets
-// import orderPlaced from '../../assets/animations/order-placed.json';
-// import paymentDone from '../../assets/animations/payment-done.json';
-// import truckMoving from '../../assets/animations/truck-moving.json';
-// import packageDelivered from '../../assets/animations/package-delivered.json';
-const orderPlaced = {} as object;
-const paymentDone = {} as object;
-const truckMoving = {} as object;
-const packageDelivered = {} as object;
+import orderPlaced from '../../assets/animations/checkmark.json';
+import paymentDone from '../../assets/animations/checkmark.json';
+import truckMoving from '../../assets/animations/truck-moving.json';
+import packageDelivered from '../../assets/animations/checkmark.json';
 
 type OrderStatus = 'placed' | 'paid' | 'shipped' | 'delivered';
 

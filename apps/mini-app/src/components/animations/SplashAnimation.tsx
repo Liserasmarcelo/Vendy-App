@@ -10,9 +10,7 @@ import { LottiePlayer, LottiePlayerHandle } from './LottiePlayer';
 import { useHaptic } from '../../hooks/useHaptic';
 import { useLottiePreload } from '../../hooks/useLottiePreload';
 
-// TODO: Crear asset vendy-logo.json
-// import vendyLogo from '../../assets/animations/vendy-logo.json';
-const vendyLogo = {} as object; // Placeholder hasta tener el JSON
+import vendyLogo from '../../assets/animations/vendy-logo.json';
 
 interface Props {
   onComplete: () => void;

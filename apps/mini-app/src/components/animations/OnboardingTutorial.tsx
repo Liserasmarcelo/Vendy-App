@@ -10,13 +10,9 @@ import { LottiePlayer, LottiePlayerHandle } from './LottiePlayer';
 import { useHaptic } from '../../hooks/useHaptic';
 import { AnimatedButton } from '../ui/AnimatedButton';
 
-// TODO: Crear assets
-// import onboardingStep1 from '../../assets/animations/onboarding-step1.json';
-// import onboardingStep2 from '../../assets/animations/onboarding-step2.json';
-// import onboardingStep3 from '../../assets/animations/onboarding-step3.json';
-const onboardingStep1 = {} as object;
-const onboardingStep2 = {} as object;
-const onboardingStep3 = {} as object;
+import onboardingStep1 from '../../assets/animations/onboarding-step1.json';
+import onboardingStep2 from '../../assets/animations/onboarding-step2.json';
+import onboardingStep3 from '../../assets/animations/onboarding-step3.json';
 
 interface Step {
   title: string;
