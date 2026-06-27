@@ -15,7 +15,7 @@
 |-----------|-------------|-------------------|
 | Cuenta de GitHub | `https://github.com/login` | Creá una gratis |
 | Cuenta de Cloudflare | `https://dash.cloudflare.com/login` | Creá una gratis |
-| DuckDNS (DDNS gratuito) | `https://www.duckdns.org/` | Creá una cuenta |
+| DuckDNS (DDNS gratuito) | `https://www.duckdns.org/` | **Opcional** - Solo si no usás Cloudflare Tunnel |
 | Node.js instalado | `node --version` → v18+ | Instalá desde nodejs.org |
 | pnpm instalado | `pnpm --version` → 8+ | `npm install -g pnpm` |
 | Docker instalado | `docker --version` → 24+ | Instalá Docker Desktop |
@@ -259,7 +259,9 @@ Verificación: En GitHub, el dropdown muestra "main" y "develop"
 
 ---
 
-### PARTE D: Configurar Cloudflare
+### PARTE D: Configurar Cloudflare Tunnel (Recomendado)
+
+> **NOTA:** Esta guía usa **Cloudflare Tunnel** exclusivamente. No se necesita DuckDNS, IP pública estática, ni abrir puertos en el router. El túnel crea una conexión saliente desde tu servidor hacia Cloudflare.
 
 **PASO 11: Crear cuenta en Cloudflare**
 
@@ -292,24 +294,7 @@ Verificación: Cloudflare muestra "Complete your nameserver setup"
 
 Verificación: En Cloudflare, eventualmente muestra "Active" (puede tardar 5 min a 24 horas)
 
-**PASO 14: Configurar registros DNS en Cloudflare**
-
-1. En Cloudflare, andá a tu dominio → "DNS" → "Records"
-2. Eliminá cualquier registro A o CNAME existente
-3. Agregá estos registros:
-
-| Type | Name | Content | Proxy Status |
-|------|------|---------|-------------|
-| A | `api` | `[IP de tu Dell, ej: 192.168.1.100]` | DNS only (nube gris) |
-| A | `app` | `[IP de tu Dell]` | DNS only (nube gris) |
-| A | `@` | `[IP de tu Dell]` | DNS only (nube gris) |
-| CNAME | `www` | `vendyapp.app` | DNS only |
-
-> **IMPORTANTE:** Dejá el proxy en "DNS only" (nube gris) por ahora. Lo activaremos después.
-
-Verificación: Los registros aparecen en la lista de DNS
-
-**PASO 15: Configurar SSL/TLS en Cloudflare**
+**PASO 14: Configurar SSL/TLS en Cloudflare**
 
 1. Andá a "SSL/TLS"
 2. En "Overview", seleccioná "Full (strict)"
@@ -322,80 +307,187 @@ Verificación: SSL/TLS muestra "Active Certificate"
 
 ---
 
-### PARTE E: Configurar DuckDNS (DDNS para IP dinámica)
+### PARTE E: Configurar Cloudflare Tunnel en el servidor
 
-**PASO 16: Crear cuenta en DuckDNS**
+> **IMPORTANTE:** Todo lo que sigue se ejecuta en el **servidor Dell** (no en tu Mac), vía SSH.
 
-1. En tu Mac, andá a https://www.duckdns.org/
-2. Hacé click en "sign in with" y elegí Google, Reddit, Twitter, GitHub o Persona
-3. Autorizá la aplicación
-4. DuckDNS te va a dar un token (una cadena larga)
-5. **Anotá este token**
-
-Verificación: Estás en el dashboard de DuckDNS con tu dominio (ej: `vendyapp.duckdns.org`)
-
-**PASO 17: Configurar tu dominio DuckDNS**
-
-1. En el dashboard de DuckDNS, en "domains", escribí un nombre: `vendy`
-2. En "current ip", dejá la IP que detecta automáticamente (debería ser la IP pública de tu casa)
-3. Hacé click en "add domain"
-4. Tu dominio será: `vendyapp.duckdns.org`
-
-Verificación: `vendyapp.duckdns.org` aparece en la lista de tus dominios
-
-**PASO 18: Instalar el cliente DuckDNS en la Dell**
-
-1. En la Dell (SSH o físicamente), logueate como `vendy`
-2. Creá el directorio:
+**PASO 15: Instalar cloudflared**
 
 ```bash
-mkdir -p ~/duckdns
-cd ~/duckdns
+# Descargar e instalar
+curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+
+sudo dpkg -i cloudflared.deb
+
+# Verificar instalación
+cloudflared --version
 ```
 
-3. Creá el script de actualización:
+Verificación: Muestra la versión instalada
+
+**PASO 16: Autenticar con Cloudflare**
 
 ```bash
-cat > duck.sh << 'EOF'
-#!/bin/bash
-echo url="https://www.duckdns.org/update?domains=vendy&token=TU_TOKEN&ip=" | curl -k -o ~/duckdns/duck.log -K -
+cloudflared tunnel login
+```
+
+1. Te dará una URL. Copiala y abrila en tu navegador de la Mac
+2. Logueate con tu cuenta de Cloudflare
+3. Seleccioná el dominio `vendyapp.app`
+4. Autorizá la aplicación
+
+Verificación: En el servidor aparece "Successfully authenticated"
+
+**PASO 17: Crear el túnel**
+
+```bash
+cloudflared tunnel create vendy
+```
+
+**Anotá el UUID** que te muestra (ej: `def831b4-7f95-44bb-a4d2-9cb70f4d4aff`)
+
+Verificación: El túnel aparece en el dashboard de Cloudflare → Zero Trust → Networks → Tunnels
+
+**PASO 18: Verificar ubicación del archivo de credenciales**
+
+```bash
+ls ~/.cloudflared/
+```
+
+Debería mostrar un archivo con nombre tipo: `TU-UUID.json`
+
+> **NOTA:** Si el archivo está en `/home/TU-USUARIO/.cloudflared/`, recordá esta ruta para el siguiente paso. Si está en `/root/.cloudflared/`, también está bien.
+
+**PASO 19: Crear el archivo de configuración**
+
+```bash
+sudo mkdir -p /etc/cloudflared
+sudo nano /etc/cloudflared/config.yml
+```
+
+Pegá exactamente esto (reemplazá `TU_UUID` con tu UUID real):
+
+```yaml
+tunnel: TU_UUID
+credentials-file: /home/TU_USUARIO/.cloudflared/TU_UUID.json
+
+ingress:
+  - hostname: api.vendyapp.app
+    service: http://localhost:3001
+  - hostname: app.vendyapp.app
+    service: http://localhost:80
+  - service: http_status:404
+```
+
+> **IMPORTANTE:**
+> - Reemplazá `TU_USUARIO` con tu nombre de usuario real en el servidor
+> - Si el archivo de credenciales está en `/root/.cloudflared/`, usá esa ruta
+> - No uses tabs, solo espacios
+> - La indentación es de 2 espacios
+
+Guardá con `Ctrl+O`, `Enter`, `Ctrl+X`
+
+**PASO 20: Validar configuración**
+
+```bash
+cloudflared tunnel ingress validate /etc/cloudflared/config.yml
+```
+
+Verificación: Debe mostrar "Validating rules from /etc/cloudflared/config.yml OK"
+
+> **ERROR COMÚN:** Si muestra error en línea 2, verificá que no haya tabs ni espacios extra. Borrá el archivo y recreálo con nano.
+
+**PASO 21: Instalar como servicio systemd**
+
+```bash
+sudo cloudflared service install
+```
+
+> **ERROR COMÚN:** Si muestra error de systemd, creá el servicio manualmente:
+
+```bash
+sudo tee /etc/systemd/system/cloudflared.service > /dev/null << 'EOF'
+[Unit]
+Description=cloudflared
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+TimeoutStartSec=0
+Type=notify
+ExecStart=/usr/bin/cloudflared tunnel --config /etc/cloudflared/config.yml run
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
 EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable cloudflared
+sudo systemctl start cloudflared
 ```
 
-> **Reemplazá `TU_TOKEN` con el token que anotaste en el Paso 16**
-
-4. Hacelo ejecutable:
+**PASO 22: Verificar que el servicio esté corriendo**
 
 ```bash
-chmod 700 duck.sh
+sudo systemctl status cloudflared
 ```
 
-5. Probalo:
+Verificación: Debe mostrar "active (running)" en verde
+
+> **ERROR COMÚN:** Si muestra "failed with result 'exit-code'", verificá:
+> 1. Que el archivo de credenciales exista en la ruta indicada
+> 2. Que los permisos del JSON sean correctos: `chmod 600 /ruta/al/archivo.json`
+> 3. Que el UUID en config.yml coincida con el nombre del archivo JSON
+
+**PASO 23: Verificar logs en tiempo real**
 
 ```bash
-./duck.sh
-cat duck.log
+sudo journalctl -u cloudflared -f
 ```
 
-Verificación: `duck.log` muestra "OK"
+Deberías ver:
+```
+INF Registered tunnel connection
+INF Connected to Cloudflare edge
+```
 
-**PASO 19: Configurar cron para actualización automática**
+> **ERROR COMÚN:** Si ves errores de `network is unreachable` en IPv6, no te preocupes. Cloudflare usa múltiples conexiones y las IPv4 funcionan correctamente.
+
+**PASO 24: Configurar DNS en Cloudflare**
 
 ```bash
-crontab -e
+cloudflared tunnel route dns vendy api.vendyapp.app
+cloudflared tunnel route dns vendy app.vendyapp.app
 ```
 
-Elegí el editor (1 para nano, o el que prefieras)
+Verificación: En Cloudflare Dashboard → DNS → Records, aparecen dos CNAME:
+- `api` → `TU-UUID.cfargotunnel.com`
+- `app` → `TU-UUID.cfargotunnel.com`
 
-Agregá esta línea al final:
+> **IMPORTANTE:** No crees registros A apuntando a tu IP local (192.168.x.x). El túnel funciona mediante CNAME a `cfargotunnel.com`.
 
+**PASO 25: Verificar desde tu MacBook**
+
+Esperá 1-2 minutos a que el DNS se propague, luego en tu Mac:
+
+```bash
+nslookup api.vendyapp.app
 ```
-*/5 * * * * ~/duckdns/duck.sh >/dev/null 2>&1
+
+Debería mostrar un CNAME a `TU-UUID.cfargotunnel.com`
+
+```bash
+curl -I https://api.vendyapp.app
 ```
 
-Guardá (Ctrl+O, Enter, Ctrl+X en nano)
+Debería responder con `HTTP/2 404` o `HTTP/2 502` (ambos son buenos signos, significa que el túnel funciona)
 
-Verificación: `crontab -l` muestra la línea agregada
+> **ERROR COMÚN:** Si `nslookup` muestra una IP local (192.168.x.x), verificá que no tengas:
+> 1. Registros A en Cloudflare apuntando a IP local (borralos)
+> 2. Entradas en `/etc/hosts` de tu Mac (comentálas)
+> 3. Cache DNS vieja (esperá 2-3 minutos o reiniciá tu Mac)
 
 ---
 
@@ -425,7 +517,11 @@ sudo ufw status
 
 Verificación: `sudo ufw status` muestra "Status: active" con los puertos permitidos
 
-**PASO 21: Configurar port forwarding en tu router**
+**PASO 20: Configurar port forwarding en tu router (SOLO si no usás Cloudflare Tunnel)**
+
+> **NOTA:** Si usás Cloudflare Tunnel (como se recomienda en esta guía), **NO necesitás** port forwarding. Saltá este paso.
+
+Si no usás túnel y querés acceso directo:
 
 1. Abrí tu navegador en tu Mac
 2. Andá a la IP de tu router (generalmente `192.168.1.1` o `192.168.0.1`)
@@ -441,7 +537,7 @@ Verificación: `sudo ufw status` muestra "Status: active" con los puertos permit
 
 6. Guardá los cambios
 
-Verificación: Desde fuera de tu red (usando datos móviles), podés acceder a `http://vendyapp.duckdns.org:3001`
+Verificación: Desde fuera de tu red (usando datos móviles), podés acceder a `http://TU-IP-PUBLICA:3001`
 
 ---
 
@@ -459,7 +555,7 @@ Verificación: Desde fuera de tu red (usando datos móviles), podés acceder a `
 - [ ] Registros DNS A creados (api, app, @)
 - [ ] SSL/TLS configurado en Cloudflare
 - [ ] DuckDNS cuenta creada
-- [ ] Dominio `vendyapp.duckdns.org` configurado
+- [ ] Dominio `vendyapp.app` configurado
 - [ ] Script de actualización DuckDNS funcionando
 - [ ] Cron configurado para actualizar cada 5 minutos
 - [ ] UFW activado con puertos permitidos
@@ -830,7 +926,7 @@ services:
       - MINI_APP_URL=${MINI_APP_URL:-https://app.vendyapp.app}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`api.vendyapp.app`) || Host(`api.vendyapp.duckdns.org`)"
+      - "traefik.http.routers.api.rule=Host(`api.vendyapp.app`) || Host(`api.vendyapp.app`)"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.services.api.loadbalancer.server.port=3001"
@@ -894,7 +990,7 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mini-app.rule=Host(`app.vendyapp.app`) || Host(`app.vendyapp.duckdns.org`)"
+      - "traefik.http.routers.mini-app.rule=Host(`app.vendyapp.app`) || Host(`app.vendyapp.app`)"
       - "traefik.http.routers.mini-app.entrypoints=websecure"
       - "traefik.http.routers.mini-app.tls.certresolver=letsencrypt"
       - "traefik.http.services.mini-app.loadbalancer.server.port=80"
@@ -1336,7 +1432,7 @@ jobs:
 
 | Name | Value | Cómo obtener |
 |------|-------|-------------|
-| `SSH_HOST` | IP pública de tu casa o `vendyapp.duckdns.org` | DuckDNS |
+| `SSH_HOST` | IP pública de tu casa o `vendyapp.app` | DuckDNS |
 | `SSH_USER` | `vendy` | El usuario que creaste en Ubuntu |
 | `SSH_PASSWORD` | Contraseña de `vendy` | La que creaste en la instalación |
 
@@ -1359,7 +1455,7 @@ sudo systemctl start ssh
 
 > **Nota:** Para mayor seguridad, considerá usar una VPN (WireGuard) en lugar de exponer SSH directamente.
 
-Verificación: Desde tu Mac, podés conectarte: `ssh vendy@vendyapp.duckdns.org`
+Verificación: Desde tu Mac, podés conectarte: `ssh vendy@vendyapp.app`
 
 **PASO 6: Commitear y probar**
 
@@ -2382,7 +2478,7 @@ https://app.vendyapp.app
 ```
 
 > Si aún no tenés el dominio configurado, usá tu DuckDNS:
-> `https://app.vendyapp.duckdns.org`
+> `https://app.vendyapp.app`
 
 6. Tocá "Save"
 
@@ -2437,7 +2533,7 @@ WEBHOOK_URL=https://api.vendyapp.app/webhook
 WEBHOOK_SECRET=tu_webhook_secret_generado
 
 # Para self-hosted con DuckDNS (alternativa)
-# WEBHOOK_URL=https://api.vendyapp.duckdns.org/webhook
+# WEBHOOK_URL=https://api.vendyapp.app/webhook
 ```
 
 2. Generá un webhook secret:
@@ -2620,7 +2716,7 @@ export { bot };
     # ... configuración existente ...
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`api.vendyapp.app`) || Host(`api.vendyapp.duckdns.org`)"
+      - "traefik.http.routers.api.rule=Host(`api.vendyapp.app`) || Host(`api.vendyapp.app`)"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.services.api.loadbalancer.server.port=3001"
